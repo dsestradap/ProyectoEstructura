@@ -10,5 +10,8 @@ public:
 	Caracter(char caracter, int frequencia);
 	int getFrequencia();
 	char getCaracter();
+	Caracter* getDerecha();
+	Caracter* getIzquierda();
+	bool hoja();
 };
 

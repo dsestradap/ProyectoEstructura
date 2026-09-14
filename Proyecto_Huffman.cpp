@@ -1,9 +1,22 @@
 #include <iostream>
 #include <cstring>
-#include <queue>
-#include "Caracter.h"
 #include <vector>
+#include <queue>
+#include <map>
+#include <string>
+#include "Caracter.h"
 using namespace std;
+
+//Generador de codigos
+void generarCodigo(map<Caracter*, string>& codigos, Caracter* nodo, string codigoGenerado) {
+	if (nodo->hoja()) {
+		codigos.at(nodo).assign(codigoGenerado);
+		codigoGenerado = "";
+		return;
+	}
+	generarCodigo(codigos, nodo->getIzquierda(), codigoGenerado + "0");
+	generarCodigo(codigos, nodo->getDerecha(), codigoGenerado + "1");
+}
 
 //Comparador para la cola
 struct Comparador {
@@ -61,4 +74,29 @@ int main(){
 
 	Caracter* raiz = cola.top();
 
-}
+	//---ASIGNAR CODIGOS----
+	map <Caracter*, string> codigos;
+	generarCodigo(codigos, raiz, "");
+
+	//----IMPRIMIR RESULTADOS CODIFICADOS---
+	cout << "RESULTADOS CODIFICADOS" << endl;
+	for (auto& caracter : codigos){
+		//hacer setw
+		if(caracter.first->getCaracter() == ' ')
+			cout << "Caracter: ' ' || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
+		else 
+			cout << "Caracter: " << caracter.first->getCaracter() << " || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
+	}
+
+	//---CADENA CODIFICADA---
+	cout << "CADENA CODIFICADA: " << endl;
+	for (i= 0; i < longitud; i++) {
+		for (auto& nodo : codigos) {
+			if (cadena[i] == nodo.first->getCaracter()) {
+				cout << nodo.second;
+				break;
+			}	
+		}
+	}
+	cout << endl;
+}//fin main
