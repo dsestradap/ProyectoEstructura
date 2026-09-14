@@ -139,7 +139,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Caracter.cpp" />
     <ClCompile Include="Proyecto_Huffman.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Caracter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
