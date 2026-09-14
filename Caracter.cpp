@@ -1,10 +1,11 @@
 #include "Caracter.h"
-Caracter::Caracter(char caracter, int frequencia)
-	:caracter(caracter), frequencia(frequencia) {
+
+Caracter::Caracter(int frequencia, Caracter* izquierda, Caracter* derecha) 
+	: frequencia(frequencia), izquierda(izquierda), derecha(derecha){
 }
 
-Caracter::Caracter(int frequencia)
-	: frequencia(frequencia) {
+Caracter::Caracter(char caracter, int frequencia)
+	:caracter(caracter), frequencia(frequencia) {
 }
 
 int Caracter::getFrequencia() { return frequencia; }

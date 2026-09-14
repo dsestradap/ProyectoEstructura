@@ -1,14 +1,24 @@
 #include <iostream>
 #include <cstring>
+#include <queue>
 #include "Caracter.h"
 #include <vector>
 using namespace std;
+
+//Comparador para la cola
+struct Comparador {
+	bool operator()(Caracter* a, Caracter* b) {
+		return a->getFrequencia() > b->getFrequencia();
+	}
+};
 
 int main(){
 	cout << "Ingrese una cadena (minimo 20 caracteres): ";
 	char cadena[100];
 	cin.getline(cadena, 100);
-	vector <Caracter*> caracteres;
+
+	//--- CREAR MIN-HEAP ---
+	priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
 
 	//-----CALCULAR FREQUENCIAS---
 	int longitud = strlen(cadena);
@@ -21,7 +31,7 @@ int main(){
 			if (cadena[j] == i)
 				frequencia++;
 		}
-		caracteres.push_back(new Caracter(i, frequencia));
+		cola.push(new Caracter(i, frequencia));
 	}
 	//minuscula
 	for (char i = 'a'; i <= 'z'; ++i) {
@@ -30,7 +40,7 @@ int main(){
 			if (cadena[j] == i)
 				frequencia++;
 		}
-		caracteres.push_back(new Caracter(i, frequencia));
+		cola.push(new Caracter(i, frequencia));
 	}
 	//espacio
 	int frequenciaEspacios = 0;
@@ -38,5 +48,17 @@ int main(){
 		if (cadena[i] == ' ')
 			frequenciaEspacios++;
 	}
-	caracteres.push_back(new Caracter(' ', frequenciaEspacios));
+	cola.push(new Caracter(' ', frequenciaEspacios));
+
+	//-----CREAR ARBOL----
+	while (cola.size() > 1) {
+		Caracter* izquierda = cola.top();
+		cola.pop();
+		Caracter* derecha = cola.top();
+		cola.pop();
+		cola.push(new Caracter(izquierda->getFrequencia() + derecha->getFrequencia(), izquierda, derecha));
+	}
+
+	Caracter* raiz = cola.top();
+
 }
