@@ -35,7 +35,6 @@ int main(){
 
 	//-----CALCULAR FREQUENCIAS---
 	int longitud = strlen(cadena);
-	int contador;
 
 	//mayuscula
 	for (char i = 'A'; i <= 'Z'; ++i){
@@ -89,14 +88,32 @@ int main(){
 	}
 
 	//---CADENA CODIFICADA---
+	string cadenaCodificada = "";
 	cout << "CADENA CODIFICADA: " << endl;
-	for (i= 0; i < longitud; i++) {
+	for (int i = 0; i < longitud; i++) {
 		for (auto& nodo : codigos) {
 			if (cadena[i] == nodo.first->getCaracter()) {
-				cout << nodo.second;
+				cadenaCodificada += nodo.second;
 				break;
 			}	
 		}
 	}
-	cout << endl;
+	cout << cadenaCodificada << endl;
+
+	//--- DECODIFICAR CADENA ---
+	string cadenaDecodificada = "";
+	Caracter* actual = raiz;
+	for (int i = 0; i < cadenaCodificada.length(); i++) {
+		char bit = cadenaCodificada[i];
+		if (bit == '0')
+			actual = actual->getIzquierda();
+		else
+			actual = actual->getDerecha();
+
+		if (actual->hoja()) {
+			cadenaDecodificada += actual->getCaracter();
+			actual = raiz;
+		}
+	}
+	cout << "CADENA DECODIFICADA: " << cadenaDecodificada << endl;
 }//fin main
