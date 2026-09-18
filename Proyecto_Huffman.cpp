@@ -10,7 +10,7 @@ using namespace std;
 //Generador de codigos
 void generarCodigo(map<Caracter*, string>& codigos, Caracter* nodo, string codigoGenerado) {
 	if (nodo->hoja()) {
-		codigos.at(nodo).assign(codigoGenerado);
+		codigos[nodo] = codigoGenerado;
 		codigoGenerado = "";
 		return;
 	}
@@ -29,6 +29,10 @@ int main(){
 	cout << "Ingrese una cadena (minimo 20 caracteres): ";
 	char cadena[100];
 	cin.getline(cadena, 100);
+	while (strlen(cadena) <= 19) {
+		cout << "Error! Ingrese una cadena con un minimo de 20 caracteres: ";
+		cin.getline(cadena, 100);
+	}
 
 	//--- CREAR MIN-HEAP ---
 	priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
@@ -43,7 +47,8 @@ int main(){
 			if (cadena[j] == i)
 				frequencia++;
 		}
-		cola.push(new Caracter(i, frequencia));
+		if(frequencia > 0)
+			cola.push(new Caracter(i, frequencia));
 	}
 	//minuscula
 	for (char i = 'a'; i <= 'z'; ++i) {
@@ -52,7 +57,8 @@ int main(){
 			if (cadena[j] == i)
 				frequencia++;
 		}
-		cola.push(new Caracter(i, frequencia));
+		if (frequencia > 0)
+			cola.push(new Caracter(i, frequencia));
 	}
 	//espacio
 	int frequenciaEspacios = 0;
@@ -60,7 +66,8 @@ int main(){
 		if (cadena[i] == ' ')
 			frequenciaEspacios++;
 	}
-	cola.push(new Caracter(' ', frequenciaEspacios));
+	if (frequenciaEspacios > 0)
+		cola.push(new Caracter(' ', frequenciaEspacios));
 
 	//-----CREAR ARBOL----
 	while (cola.size() > 1) {
@@ -82,7 +89,7 @@ int main(){
 	for (auto& caracter : codigos){
 		//hacer setw
 		if(caracter.first->getCaracter() == ' ')
-			cout << "Caracter: ' ' || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
+			cout << "Caracter: _ || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
 		else 
 			cout << "Caracter: " << caracter.first->getCaracter() << " || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
 	}
