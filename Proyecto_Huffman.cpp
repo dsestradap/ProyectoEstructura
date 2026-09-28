@@ -25,113 +25,145 @@ struct Comparador {
 	}
 };
 
+void liberarMemoria(Caracter* nodo) {
+	if (!nodo->hoja()) {
+		liberarMemoria(nodo->getIzquierda());
+		liberarMemoria(nodo->getDerecha());
+	}
+	delete nodo;
+}
+
 int main(){
-	cout << "Ingrese una cadena (minimo 20 caracteres): ";
-	char cadena[100];
-	cin.getline(cadena, 100);
-	while (strlen(cadena) <= 19) {
-		cout << "Error! Ingrese una cadena con un minimo de 20 caracteres: ";
-		cin.getline(cadena, 100);
-	}
-	cout << endl;
-	//--- CREAR MIN-HEAP ---
-	priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
-
-	//-----CALCULAR FREQUENCIAS---
-	int longitud = strlen(cadena);
-
-	//mayuscula
-	for (char i = 'A'; i <= 'Z'; ++i){
-		int frequencia = 0;
-		for (int j = 0; j < longitud; j++){
-			if (cadena[j] == i)
-				frequencia++;
+	bool continuar = true;
+	while (continuar) {
+		cout << "Ingrese una cadena (minimo 20 caracteres): ";
+		string cadena;
+		getline(cin, cadena);
+		while (cadena.length() <= 9) {
+			cout << "Error! Ingrese una cadena con un minimo de 20 caracteres: ";
+			getline(cin, cadena);
 		}
-		if(frequencia > 0)
-			cola.push(new Caracter(i, frequencia));
-	}
-	//minuscula
-	for (char i = 'a'; i <= 'z'; ++i) {
-		int frequencia = 0;
-		for (int j = 0; j < longitud; j++) {
-			if (cadena[j] == i)
-				frequencia++;
+		cout << endl;
+		//--- CREAR MIN-HEAP ---
+		priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
+
+		//-----CALCULAR FREQUENCIAS---
+		int longitud = cadena.length();
+
+		//mayuscula
+		for (char i = 'A'; i <= 'Z'; ++i) {
+			int frequencia = 0;
+			for (int j = 0; j < longitud; j++) {
+				if (cadena[j] == i)
+					frequencia++;
+			}
+			if (frequencia > 0)
+				cola.push(new Caracter(i, frequencia));
 		}
-		if (frequencia > 0)
-			cola.push(new Caracter(i, frequencia));
-	}
-	//espacio
-	int frequenciaEspacios = 0;
-	for (int i = 0; i < longitud; i++) {
-		if (cadena[i] == ' ')
-			frequenciaEspacios++;
-	}
-	if (frequenciaEspacios > 0)
-		cola.push(new Caracter(' ', frequenciaEspacios));
-
-	//-----CREAR ARBOL----
-	while (cola.size() > 1) {
-		Caracter* izquierda = cola.top();
-		cola.pop();
-		Caracter* derecha = cola.top();
-		cola.pop();
-		cola.push(new Caracter(izquierda->getFrequencia() + derecha->getFrequencia(), izquierda, derecha));
-	}
-
-	Caracter* raiz = cola.top();
-
-	//---ASIGNAR CODIGOS----
-	map <Caracter*, string> codigos;
-	generarCodigo(codigos, raiz, "");
-
-	//----IMPRIMIR RESULTADOS CODIFICADOS---
-	cout << "RESULTADOS CODIFICADOS" << endl;
-	for (auto& caracter : codigos){
-		//hacer setw
-		if(caracter.first->getCaracter() == ' ')
-			cout << "Caracter: _ || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
-		else 
-			cout << "Caracter: " << caracter.first->getCaracter() << " || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
-	}
-	cout << endl;
-
-	//---CADENA CODIFICADA---
-	string cadenaCodificada = "";
-	cout << "CADENA CODIFICADA: " << endl;
-	for (int i = 0; i < longitud; i++) {
-		for (auto& nodo : codigos) {
-			if (cadena[i] == nodo.first->getCaracter()) {
-				cadenaCodificada += nodo.second;
-				break;
-			}	
+		//minuscula
+		for (char i = 'a'; i <= 'z'; ++i) {
+			int frequencia = 0;
+			for (int j = 0; j < longitud; j++) {
+				if (cadena[j] == i)
+					frequencia++;
+			}
+			if (frequencia > 0)
+				cola.push(new Caracter(i, frequencia));
 		}
-	}
-	cout << cadenaCodificada << endl << endl;
+		//espacio
+		int frequenciaEspacios = 0;
+		for (int i = 0; i < longitud; i++) {
+			if (cadena[i] == ' ')
+				frequenciaEspacios++;
+		}
+		if (frequenciaEspacios > 0)
+			cola.push(new Caracter(' ', frequenciaEspacios));
 
-	//--- DECODIFICAR CADENA ---
-	string cadenaDecodificada = "";
-	Caracter* actual = raiz;
-	for (int i = 0; i < cadenaCodificada.length(); i++) {
-		char bit = cadenaCodificada[i];
-		if (bit == '0')
-			actual = actual->getIzquierda();
+		//-----CREAR ARBOL----
+		while (cola.size() > 1) {
+			Caracter* izquierda = cola.top();
+			cola.pop();
+			Caracter* derecha = cola.top();
+			cola.pop();
+			cola.push(new Caracter(izquierda->getFrequencia() + derecha->getFrequencia(), izquierda, derecha));
+		}
+
+		Caracter* raiz = cola.top();
+
+		//---ASIGNAR CODIGOS----
+		map <Caracter*, string> codigos;
+		generarCodigo(codigos, raiz, "");
+		if (codigos.size() == 1)
+			codigos.begin()->second = "0";
+
+		//----IMPRIMIR RESULTADOS CODIFICADOS---
+		cout << "RESULTADOS CODIFICADOS" << endl;
+		for (auto& caracter : codigos) {
+			if (caracter.first->getCaracter() == ' ')
+				cout << "Caracter: _ || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
+			else
+				cout << "Caracter: " << caracter.first->getCaracter() << " || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
+		}
+		cout << endl;
+
+		//---CADENA CODIFICADA---
+		string cadenaCodificada = "";
+		cout << "CADENA CODIFICADA: " << endl;
+		for (int i = 0; i < longitud; i++) {
+			for (auto& nodo : codigos) {
+				if (cadena[i] == nodo.first->getCaracter()) {
+					cadenaCodificada += nodo.second;
+					break;
+				}
+			}
+		}
+		cout << cadenaCodificada << endl << endl;
+
+		//--- DECODIFICAR CADENA ---
+		string cadenaDecodificada = "";
+		Caracter* actual = raiz;
+		for (int i = 0; i < cadenaCodificada.length(); i++) {
+			char bit = cadenaCodificada[i];
+			if (bit == '0')
+				actual = actual->getIzquierda();
+			else
+				actual = actual->getDerecha();
+
+			if (actual->hoja()) {
+				cadenaDecodificada += actual->getCaracter();
+				actual = raiz;
+			}
+		}
+		cout << "CADENA DECODIFICADA: " << cadenaDecodificada << endl << endl;
+
+		if (cadenaDecodificada == cadena)
+			cout << "La cadena de bits coincide con la cadena original.";
 		else
-			actual = actual->getDerecha();
+			cout << "ERROR! La cadena de bits NO coincide con la cadena original.";
+		cout << endl << endl;
 
-		if (actual->hoja()) {
-			cadenaDecodificada += actual->getCaracter();
-			actual = raiz;
+		///---TAMAÑOS Y AHORRO----
+		double longitud_original = longitud * 8;
+		double longitud_codificada = cadenaCodificada.length();
+		double porcentajeAhorro = (longitud_original - longitud_codificada) / longitud_original * 100;
+
+		cout << "Tamanio original en bits: " << longitud_original << endl;
+		cout << "Tamanio comprimido en bits: " << longitud_codificada << endl;
+		cout << "Porcentaje del ahorro: " << porcentajeAhorro << "%" << endl << endl;
+
+		//---LIBERAR MEMORIA---
+		liberarMemoria(raiz);
+
+		//--PROBAR OTRA CADENA ---
+		cout << "Desea probar otra cadena (1. Si, 2. No): ";
+		int continuarResp;
+		cin >> continuarResp;
+		cout << endl;
+		while (continuarResp != 1 && continuarResp != 2) {
+			cout << "Error! Ingrese una opcion correcta." << endl;
+			cout << "Desea probar otra cadena(1. Si, 2. No) : ";
+			cin >> continuarResp;
 		}
-	}
-	cout << "CADENA DECODIFICADA: " << cadenaDecodificada << endl << endl;
-
-	///---TAMAÑOS Y AHORRO----
-	double longitud_original = longitud * 8;
-	double longitud_codificada = cadenaCodificada.length();
-	double porcentajeAhorro = (longitud_original - longitud_codificada) / longitud_original * 100;
-
-	cout << "Tamanio original en bits: " << longitud_original << endl;
-	cout << "Tamanio comprimido en bits: " << longitud_codificada << endl;
-	cout << "Porcentaje del ahorro: " << porcentajeAhorro << "%" << endl;
-
+		continuar = continuarResp == 1 ? true : false;
+	}//while continuar
 }//fin main
