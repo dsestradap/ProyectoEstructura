@@ -173,16 +173,13 @@ int main(){
 
 		//--PROBAR OTRA CADENA ---
 		cout << "Desea probar otra cadena (1. Si, 2. No): ";
-		int continuarResp;
-		cin >> continuarResp;
-		cin.ignore();
-		cout << endl;
-		while (continuarResp != 1 && continuarResp != 2) {
-			cout << "Error! Ingrese una opcion correcta." << endl;
-			cout << "Desea probar otra cadena(1. Si, 2. No) : ";
-			cin >> continuarResp;
-			cin.ignore();
+		string resp;
+		getline(cin, resp);
+		while (resp != "1" && resp != "2") {
+			cout << "Error! Ingrese una opcion correcta (1. Si, 2. No): ";
+			getline(cin, resp);
 		}
-		continuar = continuarResp == 1 ? true : false;
+		cout << endl;
+		continuar = resp == "1" ? true : false;
 	}//while continuar
 }//fin main
