@@ -54,7 +54,7 @@ int main(){
 			if (cadena.length() < 20) 
 				cout << "Error! La cadena debe tener un minimo de 20 caracteres." << endl;
 			else if (!caracteresValidos(cadena))
-				cout << "Error! La cadena celseontiene caracteres invalidos." << endl;
+				cout << "Error! La cadena contiene caracteres invalidos." << endl;
 			else
 				valida = true;
 		}
@@ -94,9 +94,6 @@ int main(){
 		}
 		if (frequenciaEspacios > 0)
 			cola.push(new Caracter(' ', frequenciaEspacios));
-
-		if (cola.empty())
-			cout << "Error! La cadena es invalida" << endl << endl;
 
 		//-----CREAR ARBOL----
 		while (cola.size() > 1) {
