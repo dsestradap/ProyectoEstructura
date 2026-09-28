@@ -33,7 +33,7 @@ int main(){
 		cout << "Error! Ingrese una cadena con un minimo de 20 caracteres: ";
 		cin.getline(cadena, 100);
 	}
-
+	cout << endl;
 	//--- CREAR MIN-HEAP ---
 	priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
 
@@ -93,6 +93,7 @@ int main(){
 		else 
 			cout << "Caracter: " << caracter.first->getCaracter() << " || Frequencia: " << caracter.first->getFrequencia() << " || Codigo: " << caracter.second << endl;
 	}
+	cout << endl;
 
 	//---CADENA CODIFICADA---
 	string cadenaCodificada = "";
@@ -105,7 +106,7 @@ int main(){
 			}	
 		}
 	}
-	cout << cadenaCodificada << endl;
+	cout << cadenaCodificada << endl << endl;
 
 	//--- DECODIFICAR CADENA ---
 	string cadenaDecodificada = "";
@@ -122,5 +123,15 @@ int main(){
 			actual = raiz;
 		}
 	}
-	cout << "CADENA DECODIFICADA: " << cadenaDecodificada << endl;
+	cout << "CADENA DECODIFICADA: " << cadenaDecodificada << endl << endl;
+
+	///---TAMAÑOS Y AHORRO----
+	double longitud_original = longitud * 8;
+	double longitud_codificada = cadenaCodificada.length();
+	double porcentajeAhorro = (longitud_original - longitud_codificada) / longitud_original * 100;
+
+	cout << "Tamanio original en bits: " << longitud_original << endl;
+	cout << "Tamanio comprimido en bits: " << longitud_codificada << endl;
+	cout << "Porcentaje del ahorro: " << porcentajeAhorro << "%" << endl;
+
 }//fin main
