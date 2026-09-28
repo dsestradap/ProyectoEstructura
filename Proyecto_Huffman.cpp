@@ -33,17 +33,33 @@ void liberarMemoria(Caracter* nodo) {
 	delete nodo;
 }
 
+bool caracteresValidos(string cadena) {
+	for (int i = 0; i < cadena.length(); i++){
+		char car = cadena[i];
+		if (!((car >= 'A' && car <= 'Z') || (car >= 'a' && car <= 'z') || car == ' '))
+			return false;
+	}
+	return true;
+}
+
 int main(){
 	bool continuar = true;
 	while (continuar) {
-		cout << "Ingrese una cadena (minimo 20 caracteres): ";
 		string cadena;
-		getline(cin, cadena);
-		while (cadena.length() <= 9) {
-			cout << "Error! Ingrese una cadena con un minimo de 20 caracteres: ";
+
+		bool valida = false;
+		while (!valida) {
+			cout << "Ingrese una cadena (minimo 20 caracteres): ";
 			getline(cin, cadena);
+			if (cadena.length() < 20) 
+				cout << "Error! La cadena debe tener un minimo de 20 caracteres." << endl;
+			else if (!caracteresValidos(cadena))
+				cout << "Error! La cadena celseontiene caracteres invalidos." << endl;
+			else
+				valida = true;
 		}
 		cout << endl;
+
 		//--- CREAR MIN-HEAP ---
 		priority_queue<Caracter*, vector<Caracter*>, Comparador> cola;
 
@@ -78,6 +94,9 @@ int main(){
 		}
 		if (frequenciaEspacios > 0)
 			cola.push(new Caracter(' ', frequenciaEspacios));
+
+		if (cola.empty())
+			cout << "Error! La cadena es invalida" << endl << endl;
 
 		//-----CREAR ARBOL----
 		while (cola.size() > 1) {
@@ -123,11 +142,12 @@ int main(){
 		string cadenaDecodificada = "";
 		Caracter* actual = raiz;
 		for (int i = 0; i < cadenaCodificada.length(); i++) {
-			char bit = cadenaCodificada[i];
-			if (bit == '0')
-				actual = actual->getIzquierda();
-			else
-				actual = actual->getDerecha();
+			if (!raiz->hoja()) {
+				if (cadenaCodificada[i] == '0')
+					actual = actual->getIzquierda();
+				else
+					actual = actual->getDerecha();
+			}
 
 			if (actual->hoja()) {
 				cadenaDecodificada += actual->getCaracter();
@@ -158,11 +178,13 @@ int main(){
 		cout << "Desea probar otra cadena (1. Si, 2. No): ";
 		int continuarResp;
 		cin >> continuarResp;
+		cin.ignore();
 		cout << endl;
 		while (continuarResp != 1 && continuarResp != 2) {
 			cout << "Error! Ingrese una opcion correcta." << endl;
 			cout << "Desea probar otra cadena(1. Si, 2. No) : ";
 			cin >> continuarResp;
+			cin.ignore();
 		}
 		continuar = continuarResp == 1 ? true : false;
 	}//while continuar
